@@ -1,106 +1,100 @@
 const pool = require('../config/database');
 
 class Finance {
-  // Get all finances
   static async getAllFinances(type = null) {
     try {
       let query = 'SELECT * FROM finances';
       let params = [];
       
       if (type) {
-        query += ' WHERE type = ?';
+        query += ' WHERE type = $1';
         params.push(type);
       }
       
       query += ' ORDER BY date DESC';
       
-      const [rows] = await pool.execute(query, params);
-      return rows;
+      const result = await pool.query(query, params);
+      return result.rows;
     } catch (error) {
       throw error;
     }
   }
 
-  // Create finance record
   static async createFinance(data) {
     try {
       const { date, type, amount, source, description } = data;
-      const [result] = await pool.execute(
-        'INSERT INTO finances (date, type, amount, source, description) VALUES (?, ?, ?, ?, ?)',
+      const result = await pool.query(
+        'INSERT INTO finances (date, type, amount, source, description) VALUES ($1, $2, $3, $4, $5) RETURNING *',
         [date, type, amount, source, description]
       );
-      return { id: result.insertId, ...data };
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
   }
 
-  // Update finance record
   static async updateFinance(id, data) {
     try {
       const { date, type, amount, source, description } = data;
-      const [result] = await pool.execute(
-        'UPDATE finances SET date = ?, type = ?, amount = ?, source = ?, description = ? WHERE id = ?',
+      const result = await pool.query(
+        'UPDATE finances SET date = $1, type = $2, amount = $3, source = $4, description = $5 WHERE id = $6 RETURNING *',
         [date, type, amount, source, description, id]
       );
-      return result.affectedRows > 0;
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
   }
 
-  // Delete finance record
   static async deleteFinance(id) {
     try {
-      const [result] = await pool.execute('DELETE FROM finances WHERE id = ?', [id]);
-      return result.affectedRows > 0;
+      const result = await pool.query('DELETE FROM finances WHERE id = $1 RETURNING *', [id]);
+      return result.rowCount > 0;
     } catch (error) {
       throw error;
     }
   }
 
-  // Get monthly summary
   static async getMonthlySummary(year, month) {
     try {
       const startDate = `${year}-${month.padStart(2, '0')}-01`;
       const endDate = `${year}-${month.padStart(2, '0')}-31`;
       
-      const [income] = await pool.execute(
-        'SELECT SUM(amount) as total FROM finances WHERE type = "income" AND date BETWEEN ? AND ?',
-        [startDate, endDate]
+      const incomeResult = await pool.query(
+        'SELECT COALESCE(SUM(amount), 0) as total FROM finances WHERE type = $1 AND date BETWEEN $2 AND $3',
+        ['income', startDate, endDate]
       );
       
-      const [expense] = await pool.execute(
-        'SELECT SUM(amount) as total FROM finances WHERE type = "expense" AND date BETWEEN ? AND ?',
-        [startDate, endDate]
+      const expenseResult = await pool.query(
+        'SELECT COALESCE(SUM(amount), 0) as total FROM finances WHERE type = $1 AND date BETWEEN $2 AND $3',
+        ['expense', startDate, endDate]
       );
       
       return {
-        income: income[0].total || 0,
-        expense: expense[0].total || 0,
-        balance: (income[0].total || 0) - (expense[0].total || 0)
+        income: parseFloat(incomeResult.rows[0].total),
+        expense: parseFloat(expenseResult.rows[0].total),
+        balance: parseFloat(incomeResult.rows[0].total) - parseFloat(expenseResult.rows[0].total)
       };
     } catch (error) {
       throw error;
     }
   }
 
-  // Get yearly summary
   static async getYearlySummary(year) {
     try {
-      const [rows] = await pool.execute(
+      const result = await pool.query(
         `SELECT 
-          MONTH(date) as month,
+          EXTRACT(MONTH FROM date) as month,
           SUM(CASE WHEN type = 'income' THEN amount ELSE 0 END) as income,
           SUM(CASE WHEN type = 'expense' THEN amount ELSE 0 END) as expense
          FROM finances 
-         WHERE YEAR(date) = ?
-         GROUP BY MONTH(date)
+         WHERE EXTRACT(YEAR FROM date) = $1
+         GROUP BY EXTRACT(MONTH FROM date)
          ORDER BY month`,
         [year]
       );
       
-      return rows;
+      return result.rows;
     } catch (error) {
       throw error;
     }
