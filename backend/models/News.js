@@ -1,60 +1,55 @@
 const pool = require('../config/database');
 
 class News {
-  // Get all news
   static async getAllNews(limit = 10) {
     try {
-      const [rows] = await pool.execute(
-        'SELECT * FROM news ORDER BY created_at DESC LIMIT ?',
+      const result = await pool.query(
+        'SELECT * FROM news ORDER BY created_at DESC LIMIT $1',
         [limit]
       );
-      return rows;
+      return result.rows;
     } catch (error) {
       throw error;
     }
   }
 
-  // Get news by ID
   static async getNewsById(id) {
     try {
-      const [rows] = await pool.execute('SELECT * FROM news WHERE id = ?', [id]);
-      return rows[0] || null;
+      const result = await pool.query('SELECT * FROM news WHERE id = $1', [id]);
+      return result.rows[0] || null;
     } catch (error) {
       throw error;
     }
   }
 
-  // Create news
   static async createNews(title, content, image_url = null) {
     try {
-      const [result] = await pool.execute(
-        'INSERT INTO news (title, content, image_url) VALUES (?, ?, ?)',
+      const result = await pool.query(
+        'INSERT INTO news (title, content, image_url) VALUES ($1, $2, $3) RETURNING *',
         [title, content, image_url]
       );
-      return { id: result.insertId, title, content, image_url };
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
   }
 
-  // Update news
   static async updateNews(id, title, content, image_url = null) {
     try {
-      const [result] = await pool.execute(
-        'UPDATE news SET title = ?, content = ?, image_url = ? WHERE id = ?',
+      const result = await pool.query(
+        'UPDATE news SET title = $1, content = $2, image_url = $3 WHERE id = $4 RETURNING *',
         [title, content, image_url, id]
       );
-      return result.affectedRows > 0;
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
   }
 
-  // Delete news
   static async deleteNews(id) {
     try {
-      const [result] = await pool.execute('DELETE FROM news WHERE id = ?', [id]);
-      return result.affectedRows > 0;
+      const result = await pool.query('DELETE FROM news WHERE id = $1 RETURNING *', [id]);
+      return result.rowCount > 0;
     } catch (error) {
       throw error;
     }
