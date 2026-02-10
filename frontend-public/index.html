@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Masjid At-Tauhid - Website Resmi</title>
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="logo">
+                <img src="assets/images/mosque-icon.png" alt="Masjid Icon" class="mosque-icon-img">
+                <div class="logo-text">
+                    <h1>Masjid At-Tauhid</h1>
+                    <p>Website Resmi</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h2>Selamat Datang di Masjid At-Tauhid</h2>
+            <p>Tempat ibadah dan pembinaan umat yang nyaman dan kondusif</p>
+        </div>
+    </section>
+
+    <main class="container">
+        <!-- Prayer Schedule Section -->
+        <section id="schedule" class="section">
+            <h2 class="section-title">🕌 Jadwal Sholat Hari Ini</h2>
+            <div class="schedule-container" id="scheduleContainer">
+                <div class="loading-placeholder">
+                    <div class="loading-spinner"></div>
+                    <p>Loading jadwal sholat...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Information Section -->
+        <section id="information" class="section">
+            <h2 class="section-title">ℹ️ Informasi Masjid</h2>
+            <div class="info-tabs">
+                <button class="tab-btn active" data-category="all">Semua</button>
+                <button class="tab-btn" data-category="profile">Profil</button>
+                <button class="tab-btn" data-category="kegiatan">Kegiatan</button>
+                <button class="tab-btn" data-category="kontak">Kontak</button>
+            </div>
+            <div class="info-container" id="infoContainer">
+                <div class="loading-placeholder">
+                    <div class="loading-spinner"></div>
+                    <p>Loading informasi...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Finance Summary Section -->
+        <section id="finance" class="section">
+            <h2 class="section-title">💰 Laporan Keuangan Bulan Ini</h2>
+            <div class="finance-summary" id="financeSummary">
+                <div class="loading-placeholder">
+                    <div class="loading-spinner"></div>
+                    <p>Loading laporan keuangan...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news" class="section">
+            <h2 class="section-title">📰 Berita Terbaru</h2>
+            <div class="news-container" id="newsContainer">
+                <div class="loading-placeholder">
+                    <div class="loading-spinner"></div>
+                    <p>Loading berita...</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Tentang Kami</h3>
+                    <p>Masjid At-Tauhid adalah tempat ibadah yang nyaman dan kondusif untuk seluruh jamaah.</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Kontak</h3>
+                    <p>Alamat: Jl. Masjid At-Tauhid No. 123, Jakarta</p>
+                    <p>Telepon: (021) 1234-5678</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Ikuti Kami</h3>
+                    <div class="social-links">
+                        <a href="#" class="social-link">Facebook</a>
+                        <a href="#" class="social-link">Instagram</a>
+                    </div>
+                </div>
+            </div>
+            <p>&copy; 2026 Masjid At-Tauhid. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/config.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

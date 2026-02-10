@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Masjid At-Tauhid</title>
+    <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Login Form -->
+        <div id="loginSection" class="auth-section">
+            <div class="auth-box">
+                <div class="logo-login">
+                    <img src="assets/images/logo.png" alt="Logo Masjid" class="logo-img">
+                    <h2>🔐 Login Admin</h2>
+                </div>
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="username" required placeholder="Masukkan username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="password" required placeholder="Masukkan password">
+                    </div>
+                    <button type="submit" class="btn-primary">Login</button>
+                    <p id="loginMessage" class="message"></p>
+                </form>
+            </div>
+        </div>
+
+        <!-- Dashboard (hidden initially) -->
+        <div id="dashboardSection" style="display: none;">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <div class="sidebar-header">
+                    <img src="assets/images/logo.png" alt="Logo" class="sidebar-logo">
+                    <h3>🏛️ Admin Panel</h3>
+                </div>
+                <nav class="sidebar-menu">
+                    <button class="menu-item active" data-page="dashboard">
+                        <img src="assets/images/icons/dashboard.svg" alt="Dashboard" class="menu-icon">
+                        Dashboard
+                    </button>
+                    <button class="menu-item" data-page="schedule">
+                        <img src="assets/images/icons/schedule.svg" alt="Schedule" class="menu-icon">
+                        Jadwal Sholat
+                    </button>
+                    <button class="menu-item" data-page="information">
+                        <img src="assets/images/icons/info.svg" alt="Info" class="menu-icon">
+                        Informasi
+                    </button>
+                    <button class="menu-item" data-page="finance">
+                        <img src="assets/images/icons/finance.svg" alt="Finance" class="menu-icon">
+                        Keuangan
+                    </button>
+                    <button class="menu-item" data-page="news">
+                        <img src="assets/images/icons/news.svg" alt="News" class="menu-icon">
+                        Berita
+                    </button>
+                    <button class="menu-item" data-page="users">
+                        <img src="assets/images/icons/users.svg" alt="Users" class="menu-icon">
+                        Users
+                    </button>
+                    <button class="menu-item" id="logoutBtn">
+                        <img src="assets/images/icons/logout.svg" alt="Logout" class="menu-icon">
+                        Logout
+                    </button>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="main-content">
+                <header class="main-header">
+                    <h1 id="pageTitle">Dashboard</h1>
+                    <div class="user-info">
+                        <img src="assets/images/user-avatar.png" alt="Avatar" class="user-avatar">
+                        <span id="userName">Admin</span>
+                    </div>
+                </header>
+
+                <div id="pageContent">
+                    <!-- Content will be loaded here dynamically -->
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="js/config.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/schedule.js"></script>
+    <script src="js/information.js"></script>
+    <script src="js/finance.js"></script>
+    <script src="js/news.js"></script>
+    <script src="js/users.js"></script>
+</body>
+</html>
