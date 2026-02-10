@@ -1,41 +1,39 @@
 const pool = require('../config/database');
 
 class PrayerSchedule {
-  // Get current prayer schedule
   static async getCurrentSchedule() {
     try {
-      const [rows] = await pool.execute(
+      const result = await pool.query(
         'SELECT * FROM prayer_schedules ORDER BY date DESC LIMIT 1'
       );
-      return rows[0] || null;
+      return result.rows[0] || null;
     } catch (error) {
       throw error;
     }
   }
 
-  // Update prayer schedule
   static async updateSchedule(data) {
     try {
       const { date, subuh, dzuhur, ashar, maghrib, isya, location } = data;
       
-      const [existing] = await pool.execute(
-        'SELECT id FROM prayer_schedules WHERE date = ?',
+      const existingResult = await pool.query(
+        'SELECT id FROM prayer_schedules WHERE date = $1',
         [date]
       );
 
-      if (existing.length > 0) {
+      if (existingResult.rows.length > 0) {
         // Update existing
-        await pool.execute(
+        await pool.query(
           `UPDATE prayer_schedules 
-           SET subuh = ?, dzuhur = ?, ashar = ?, maghrib = ?, isya = ?, location = ?
-           WHERE date = ?`,
+           SET subuh = $1, dzuhur = $2, ashar = $3, maghrib = $4, isya = $5, location = $6
+           WHERE date = $7`,
           [subuh, dzuhur, ashar, maghrib, isya, location, date]
         );
       } else {
         // Insert new
-        await pool.execute(
+        await pool.query(
           `INSERT INTO prayer_schedules (date, subuh, dzuhur, ashar, maghrib, isya, location) 
-           VALUES (?, ?, ?, ?, ?, ?, ?)`,
+           VALUES ($1, $2, $3, $4, $5, $6, $7)`,
           [date, subuh, dzuhur, ashar, maghrib, isya, location]
         );
       }
@@ -46,14 +44,13 @@ class PrayerSchedule {
     }
   }
 
-  // Get schedule by date range
   static async getScheduleByDate(startDate, endDate) {
     try {
-      const [rows] = await pool.execute(
-        'SELECT * FROM prayer_schedules WHERE date BETWEEN ? AND ? ORDER BY date ASC',
+      const result = await pool.query(
+        'SELECT * FROM prayer_schedules WHERE date BETWEEN $1 AND $2 ORDER BY date ASC',
         [startDate, endDate]
       );
-      return rows;
+      return result.rows;
     } catch (error) {
       throw error;
     }
