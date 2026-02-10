@@ -2,33 +2,31 @@ const pool = require('../config/database');
 const bcrypt = require('bcryptjs');
 
 class User {
-  // Register new admin
   static async register(username, password, name, role = 'admin') {
     try {
       const hashedPassword = await bcrypt.hash(password, 10);
-      const [result] = await pool.execute(
-        'INSERT INTO users (username, password, name, role) VALUES (?, ?, ?, ?)',
+      const result = await pool.query(
+        'INSERT INTO users (username, password, name, role) VALUES ($1, $2, $3, $4) RETURNING *',
         [username, hashedPassword, name, role]
       );
-      return { id: result.insertId, username, name, role };
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
   }
 
-  // Login
   static async login(username, password) {
     try {
-      const [rows] = await pool.execute(
-        'SELECT * FROM users WHERE username = ?',
+      const result = await pool.query(
+        'SELECT * FROM users WHERE username = $1',
         [username]
       );
 
-      if (rows.length === 0) {
+      if (result.rows.length === 0) {
         return null;
       }
 
-      const user = rows[0];
+      const user = result.rows[0];
       const isValidPassword = await bcrypt.compare(password, user.password);
 
       if (!isValidPassword) {
@@ -46,34 +44,33 @@ class User {
     }
   }
 
-  // Get all users
   static async getAllUsers() {
     try {
-      const [rows] = await pool.execute('SELECT id, username, name, role, created_at FROM users');
-      return rows;
+      const result = await pool.query(
+        'SELECT id, username, name, role, created_at FROM users ORDER BY created_at DESC'
+      );
+      return result.rows;
     } catch (error) {
       throw error;
     }
   }
 
-  // Update user
   static async updateUser(id, name, role) {
     try {
-      const [result] = await pool.execute(
-        'UPDATE users SET name = ?, role = ? WHERE id = ?',
+      const result = await pool.query(
+        'UPDATE users SET name = $1, role = $2 WHERE id = $3 RETURNING *',
         [name, role, id]
       );
-      return result.affectedRows > 0;
+      return result.rows[0];
     } catch (error) {
       throw error;
     }
   }
 
-  // Delete user
   static async deleteUser(id) {
     try {
-      const [result] = await pool.execute('DELETE FROM users WHERE id = ?', [id]);
-      return result.affectedRows > 0;
+      const result = await pool.query('DELETE FROM users WHERE id = $1 RETURNING *', [id]);
+      return result.rowCount > 0;
     } catch (error) {
       throw error;
     }
